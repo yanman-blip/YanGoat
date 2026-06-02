@@ -1,0 +1,29 @@
+{
+  "name": "SWIFT Mechanical Engine",
+  "short_name": "SWIFT",
+  "description": "SWIFT mechanical trading dashboard — MA-cross signals, 15m/4h timeframes, ATR risk sizing, MetaApi execution.",
+  "id": "/YanGoat/swift-mechanical.html",
+  "start_url": "/YanGoat/swift-mechanical.html",
+  "scope": "/YanGoat/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0a0e1a",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
