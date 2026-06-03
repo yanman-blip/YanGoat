@@ -1,0 +1,19 @@
+{
+  "name": "YanBoat Learning Engine",
+  "short_name": "YanBoat",
+  "description": "YanBoat trading engine — MA-cross signals, 15m/4h timeframes, ATR sizing, confluence scoring, session & daily guards, cooldown, and lite-learning. MetaApi execution.",
+  "id": "/YanGoat/yanboat.html",
+  "start_url": "/YanGoat/yanboat.html",
+  "scope": "/YanGoat/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0a0e1a",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
