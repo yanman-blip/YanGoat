@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#0a0e1a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="YanBoat"/>
+<link rel="manifest" href="manifest-yanboat.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<title>YanBoat</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0e1a; --bg2:#0d1322; --panel:#111a2e; --panel2:#0e1626;
+  --line:#1b2840; --line2:#26395a;
+  --gold:#d4af37; --gold2:#b8941f;
+  --green:#16c784; --greend:rgba(22,199,132,.1);
+  --red:#ea3943; --redd:rgba(234,57,67,.1);
+  --blue:#3b82f6; --amber:#f59e0b;
+  --text:#e6edf6; --mut:#5b6f8c; --mut2:#3d4f6b;
+  --mono:'JetBrains Mono',monospace; --disp:'Bebas Neue',sans-serif; --ui:'Sora',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--ui);font-size:14px}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 50% 0%,rgba(212,175,55,.05),transparent 60%);pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:440px;margin:0 auto;padding-bottom:78px;min-height:100dvh}
+
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 11px;background:rgba(10,14,26,.96);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:200;backdrop-filter:blur(18px)}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:20px;color:#0a0e1a;box-shadow:0 0 22px rgba(212,175,55,.28)}
+.bname{font-family:var(--disp);font-size:21px;letter-spacing:1.5px;line-height:.9}
+.btag{font-size:9px;letter-spacing:2px;color:var(--gold);text-transform:uppercase}
+.statedot{display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono);color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--mut2);transition:.3s}
+.dot.on{background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.demo-banner{background:linear-gradient(90deg,var(--amber),#d97706);color:#0a0e1a;font-weight:700;font-size:11px;text-align:center;padding:6px;letter-spacing:.5px}
+.warn-banner{background:var(--redd);border:1px solid var(--red);color:#ffb3b8;font-size:11px;padding:9px 14px;margin:12px 16px;border-radius:9px;line-height:1.4}
+
+.page{display:none;padding:16px}
+.page.active{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:13px}
+.card-t{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);margin-bottom:13px;display:flex;align-items:center;gap:7px}
+.card-t::before{content:'';width:3px;height:11px;background:var(--gold);border-radius:2px}
+
+.bal{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px}
+.bal-v{font-family:var(--mono);font-size:32px;font-weight:700;letter-spacing:-1px}
+.bal-c{font-size:11px;color:var(--mut);font-family:var(--mono)}
+.bal-eq{display:flex;gap:18px;margin-top:10px;padding-top:11px;border-top:1px solid var(--line)}
+.eq-i{flex:1}
+.eq-l{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+.eq-v{font-family:var(--mono);font-size:14px;font-weight:500}
+
+.sig{display:flex;align-items:center;gap:13px;padding:15px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}
+.sig-badge{min-width:62px;height:62px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--disp);font-size:24px;letter-spacing:1px;background:var(--bg2);color:var(--mut)}
+.sig-badge.buy{background:var(--greend);color:var(--green);border:1px solid var(--green)}
+.sig-badge.sell{background:var(--redd);color:var(--red);border:1px solid var(--red)}
+.sig-meta{flex:1}
+.sig-pair{font-family:var(--mono);font-size:16px;font-weight:700}
+.sig-desc{font-size:11px;color:var(--mut);margin-top:3px;line-height:1.4}
+.sig-px{font-family:var(--mono);font-size:13px;color:var(--text);margin-top:5px}
+
+.lvls{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:13px}
+.lvl{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.lvl-l{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
+.lvl-v{font-family:var(--mono);font-size:14px;font-weight:500}
+.lvl.tp .lvl-v{color:var(--green)}
+.lvl.sl .lvl-v{color:var(--red)}
+
+.row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row-l{font-size:13px;color:var(--text)}
+.row-s{font-size:10px;color:var(--mut);margin-top:2px}
+
+input,select{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:9px;padding:11px 13px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none}
+input:focus,select:focus{border-color:var(--gold)}
+label.fl{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin:13px 0 6px}
+label.fl:first-child{margin-top:0}
+
+.toggle{position:relative;width:46px;height:26px;background:var(--bg2);border:1px solid var(--line2);border-radius:14px;cursor:pointer;transition:.25s;flex-shrink:0}
+.toggle.on{background:var(--gold);border-color:var(--gold)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--mut);transition:.25s}
+.toggle.on::after{background:#0a0e1a;transform:translateX(20px)}
+
+.seg{display:flex;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:3px;gap:3px}
+.seg-o{flex:1;text-align:center;padding:9px;border-radius:7px;font-size:12px;font-weight:600;color:var(--mut);cursor:pointer;transition:.2s}
+.seg-o.on{background:var(--gold);color:#0a0e1a}
+
+.btn{width:100%;padding:15px;border:none;border-radius:12px;font-family:var(--ui);font-weight:700;font-size:14px;letter-spacing:.5px;cursor:pointer;transition:.2s}
+.btn-go{background:linear-gradient(135deg,var(--green),#0fa968);color:#fff}
+.btn-stop{background:linear-gradient(135deg,var(--red),var(--red));color:#fff}
+.btn-ghost{background:var(--bg2);border:1px solid var(--line2);color:var(--text)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4}
+
+.tradeitem{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tradeitem:last-child{border-bottom:none}
+.ti-dir{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:15px;flex-shrink:0}
+.ti-dir.b{background:var(--greend);color:var(--green)}
+.ti-dir.s{background:var(--redd);color:var(--red)}
+.ti-m{flex:1}
+.ti-pair{font-family:var(--mono);font-size:13px;font-weight:600}
+.ti-time{font-size:10px;color:var(--mut);margin-top:1px}
+.ti-pnl{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right}
+.pos{color:var(--green)}.neg{color:var(--red)}
+
+.empty{text-align:center;padding:34px 16px;color:var(--mut2)}
+.empty-i{font-size:34px;margin-bottom:10px;opacity:.5}
+
+.log{font-family:var(--mono);font-size:11px;line-height:1.7;max-height:230px;overflow-y:auto}
+.log-l{padding:3px 0;border-bottom:1px solid rgba(27,40,64,.5);color:var(--mut)}
+.log-l .t{color:var(--mut2)}
+.log-l.g{color:var(--green)}.log-l.r{color:var(--red)}.log-l.y{color:var(--amber)}
+
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:440px;margin:0 auto;display:flex;background:rgba(10,14,26,.97);border-top:1px solid var(--line);backdrop-filter:blur(18px);z-index:200}
+.nav-i{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:11px 0 13px;color:var(--mut2);cursor:pointer;transition:.2s}
+.nav-i.on{color:var(--gold)}
+.nav-ic{font-size:19px}
+.nav-l{font-size:9px;letter-spacing:.5px;text-transform:uppercase}
+
+.params{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.note{font-size:10px;color:var(--mut);line-height:1.5;margin-top:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="brand">
+      <div class="logo">Y</div>
+      <div>
+        <div class="bname">YANBOAT</div>
+        <div class="btag">Learning Engine</div>
+      </div>
+    </div>
+    <div class="statedot"><span class="dot" id="dot"></span><span id="stateTxt">Offline</span></div>
+  </div>
+  <div class="demo-banner" id="demoBanner">⚠ DEMO MODE — no real funds at risk</div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="p-dash">
+    <div class="warn-banner">
+      <b>Broker risk note:</b> Weltrade has been reported as operating without valid regulation. Keep this on a demo account until you've fully tested. Full engine: MA-cross signal, 15m/4h timeframes, ATR sizing, confluence score, session + daily guards, cooldown, and lite-learning. No external AI.
+    </div>
+    <div class="card">
+      <div class="card-t">Account</div>
+      <div class="bal">
+        <div class="bal-v" id="balV">—</div>
+        <div class="bal-c" id="balC">connect to load</div>
+      </div>
+      <div class="bal-eq">
+        <div class="eq-i"><div class="eq-l">Equity</div><div class="eq-v" id="eqV">—</div></div>
+        <div class="eq-i"><div class="eq-l">Open P&L</div><div class="eq-v" id="opV">—</div></div>
+        <div class="eq-i"><div class="eq-l">Open</div><div class="eq-v" id="cntV">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-t">Live Signal · <span id="sigSym">—</span></div>
+      <div class="sig">
+        <div class="sig-badge" id="sigBadge">WAIT</div>
+        <div class="sig-meta">
+          <div class="sig-pair" id="sigPair">—</div>
+          <div class="sig-desc" id="sigDesc">MA(close) vs MA(open) crossover. No signal until the lines cross.</div>
+          <div class="sig-px" id="sigPx"></div>
+        </div>
+      </div>
+      <div class="lvls" id="sigLvls" style="display:none">
+        <div class="lvl"><div class="lvl-l">Entry</div><div class="lvl-v" id="lEntry">—</div></div>
+        <div class="lvl sl"><div class="lvl-l">Stop Loss</div><div class="lvl-v" id="lSL">—</div></div>
+        <div class="lvl tp"><div class="lvl-l">TP1 · 50%</div><div class="lvl-v" id="lTP1">—</div></div>
+        <div class="lvl tp"><div class="lvl-l">TP2 · 30%</div><div class="lvl-v" id="lTP2">—</div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-go" id="runBtn">▶ START AUTO-TRADING</button>
+  </div>
+
+  <!-- POSITIONS -->
+  <div class="page" id="p-pos">
+    <div class="card">
+      <div class="card-t">Open Positions</div>
+      <div id="posList"><div class="empty"><div class="empty-i">⊟</div>No open positions</div></div>
+    </div>
+    <div class="card">
+      <div class="card-t">Recent Activity</div>
+      <div id="histList"><div class="empty"><div class="empty-i">⌗</div>No trades yet</div></div>
+    </div>
+  </div>
+
+  <!-- STRATEGY -->
+  <div class="page" id="p-strat">
+    <div class="card">
+      <div class="card-t">SWIFT Parameters</div>
+      <p class="note" style="margin-top:0">These mirror the Pine Script defaults exactly. Entry fires on an MA(close)/MA(open) crossover; exits ladder out at three take-profits with a hard stop.</p>
+      <label class="fl">MA Type</label>
+      <select id="maType"><option>ALMA</option><option>TEMA</option><option>HullMA</option><option>EMA</option><option>SMA</option></select>
+      <div class="params">
+        <div><label class="fl">MA Period</label><input id="maLen" value="2"/></div>
+        <div><label class="fl">ALMA Offset</label><input id="almaOff" value="0.85"/></div>
+      </div>
+      <label class="fl">Risk mode</label>
+      <select id="riskMode"><option value="atr" selected>ATR multiples (adapts to each pair)</option><option value="pct">Fixed % of price</option></select>
+      <p class="note" style="margin-top:6px">ATR mode sizes SL/TP from each pair's own volatility, so fast pairs get wider targets and slow pairs tighter — better than a flat %.</p>
+      <div class="params">
+        <div><label class="fl">ATR Period</label><input id="atrLen" value="14"/></div>
+        <div><label class="fl">SL × ATR</label><input id="slAtr" value="1.0"/></div>
+      </div>
+      <div class="params">
+        <div><label class="fl">TP1 × ATR</label><input id="tp1Atr" value="1.5"/></div>
+        <div><label class="fl">TP2 × ATR</label><input id="tp2Atr" value="2.5"/></div>
+      </div>
+      <div class="params">
+        <div><label class="fl">TP3 × ATR</label><input id="tp3Atr" value="4.0"/></div>
+        <div></div>
+      </div>
+      <p class="note" style="margin-top:10px;opacity:.7">Fixed-% values (used only if Risk mode = %):</p>
+      <div class="params">
+        <div><label class="fl">Stop Loss %</label><input id="slPct" value="0.5"/></div>
+        <div><label class="fl">TP1 %</label><input id="tp1Pct" value="1.0"/></div>
+      </div>
+      <div class="params">
+        <div><label class="fl">TP2 %</label><input id="tp2Pct" value="1.5"/></div>
+        <div><label class="fl">TP3 %</label><input id="tp3Pct" value="2.0"/></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">Trade Settings</div>
+      <label class="fl">Signal timeframe</label>
+      <select id="sigTF"><option value="5m">5m</option><option value="15m" selected>15m</option><option value="1h">1h</option><option value="4h">4h</option></select>
+      <div class="row" style="margin-top:13px">
+        <div><div class="row-l">Use higher-TF direction filter</div><div class="row-s">Only trade with the bigger trend</div></div>
+        <div class="toggle on" id="tgTrend"></div>
+      </div>
+      <label class="fl">Direction timeframe</label>
+      <select id="trendTF"><option value="1h">1h</option><option value="4h" selected>4h</option><option value="1d">1d</option></select>
+      <label class="fl">Dashboard symbol (what the Dash tab shows)</label>
+      <select id="symSel"><option value="">— connect & load symbols —</option></select>
+      <button class="btn btn-ghost" id="loadSymsBtn" style="margin-top:8px;padding:10px;font-size:12px">⟳ Load symbols from my account</button>
+      <p class="note">Pulls the exact synthetic names (PainX, FX Vol, SFX Vol…) directly from your Weltrade account so the spelling always matches.</p>
+
+      <label class="fl">Watchlist — symbols the bot scans (tap to multi-select)</label>
+      <select id="watchSel" multiple size="6" style="font-size:12px"></select>
+      <p class="note">The engine scans every selected symbol each cycle. When one signals, it opens the 3-position ladder on that pair. Leave empty to trade only the Dashboard symbol above.</p>
+
+      <label class="fl">Direction</label>
+      <div class="seg" id="dirSeg">
+        <div class="seg-o on" data-v="BOTH">Both</div>
+        <div class="seg-o" data-v="LONG">Long</div>
+        <div class="seg-o" data-v="SHORT">Short</div>
+      </div>
+      <div class="params" style="margin-top:13px">
+        <div><label class="fl">Lot Size (per position)</label><input id="lot" value="0.01"/></div>
+        <div><label class="fl">Poll (sec)</label><input id="poll" value="15"/></div>
+      </div>
+      <div class="params">
+        <div><label class="fl">Max lot (hard cap)</label><input id="maxLot" value="0.07"/></div>
+        <div></div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div><div class="row-l">Use each symbol's standard lot</div><div class="row-s">Every pair trades its broker minimum — no scaling</div></div>
+        <div class="toggle on" id="tgFixedLot"></div>
+      </div>
+      <label class="fl">Max pairs per day</label>
+      <input id="maxPairs" value="5"/>
+      <label class="fl">Max positions per pair</label>
+      <input id="maxPerPair" value="1"/>
+      <div class="note" id="dailyStat" style="margin-top:8px">0 / 5 pairs used today</div>
+      <button class="btn btn-ghost" id="resetDailyBtn" style="margin-top:9px;padding:10px;font-size:12px">↻ Reset daily pair count</button>
+      <div class="row" style="margin-top:13px">
+        <div><div class="row-l">Confirm on bar close</div><div class="row-s">Wait for candle to close (non-repaint)</div></div>
+        <div class="toggle on" id="tgConfirm"></div>
+      </div>
+      <div class="row" style="margin-top:4px">
+        <div><div class="row-l">Close on opposite signal</div><div class="row-s">Exit all positions on a pair when the signal flips</div></div>
+        <div class="toggle on" id="tgFlip"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-t">YanBoat Engine Filters</div>
+      <div class="row" style="padding-top:0">
+        <div><div class="row-l">Session filter</div><div class="row-s">Trade only London 08–16 / NY 13–21</div></div>
+        <div class="toggle" id="tgSession"></div>
+      </div>
+      <div class="row">
+        <div><div class="row-l">Confluence score gate</div><div class="row-s">Trend + volatility + session + momentum</div></div>
+        <div class="toggle on" id="tgScore"></div>
+      </div>
+      <label class="fl">Min score to trade (0–100)</label>
+      <input id="minScore" value="50"/>
+      <div class="row" style="margin-top:8px">
+        <div><div class="row-l">Daily guards</div><div class="row-s">Stop after max loss / profit target</div></div>
+        <div class="toggle on" id="tgGuards"></div>
+      </div>
+      <div class="params">
+        <div><label class="fl">Max daily loss ($)</label><input id="maxLoss" value="100"/></div>
+        <div><label class="fl">Profit target ($)</label><input id="profitTgt" value="0"/></div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div><div class="row-l">Lite learning</div><div class="row-s">Learns win-rate by hour & setup; gates + sizes</div></div>
+        <div class="toggle on" id="tgLearn"></div>
+      </div>
+      <div class="note" id="learnStat" style="margin-top:8px">Learned: 0 closed cycles</div>
+      <div class="note" style="margin-top:6px;opacity:.7">Lite learning approximates the EA's Naive-Bayes/Kelly engine using this browser's storage. It is not identical — less data, simpler model, and it resets if you clear site data. Cooldown locks trading after 4 straight losing cycles until the next day.</div>
+      <button class="btn btn-ghost" id="resetCooldownBtn" style="margin-top:9px;padding:10px;font-size:12px">↻ Reset cooldown</button>
+    </div>
+  </div>
+
+  <!-- CONNECT -->
+  <div class="page" id="p-conn">
+    <div class="card">
+      <div class="card-t">MetaApi Connection</div>
+      <p class="note" style="margin-top:0">Your Weltrade MT5 account connects through MetaApi (the cloud bridge). Credentials are stored only in this browser's local storage and sent directly to MetaApi over HTTPS — never to anyone else.</p>
+      <label class="fl">MetaApi Token</label>
+      <input id="maToken" type="password" placeholder="paste token"/>
+      <label class="fl">Account ID</label>
+      <input id="maAcct" placeholder="e.g. 1eda642a-…"/>
+      <label class="fl">Region</label>
+      <select id="maRegion"><option value="new-york">new-york</option><option value="london">london</option><option value="singapore">singapore</option></select>
+      <div class="row" style="margin-top:8px">
+        <div><div class="row-l">Demo account</div><div class="row-s">Strongly recommended</div></div>
+        <div class="toggle on" id="tgDemo"></div>
+      </div>
+      <button class="btn btn-go" id="connBtn" style="margin-top:15px">CONNECT</button>
+      <button class="btn btn-ghost" id="discBtn" style="margin-top:9px;display:none">DISCONNECT</button>
+      <button class="btn btn-ghost" id="installBtn" style="margin-top:9px;display:none">⤓ INSTALL APP</button>
+    </div>
+    <div class="card">
+      <div class="card-t">Engine Log</div>
+      <div class="log" id="log"><div class="log-l"><span class="t">[--:--]</span> Idle. Connect to begin.</div></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <div class="nav-i on" data-p="dash"><div class="nav-ic">◎</div><div class="nav-l">Dash</div></div>
+    <div class="nav-i" data-p="pos"><div class="nav-ic">⊟</div><div class="nav-l">Trades</div></div>
+    <div class="nav-i" data-p="strat"><div class="nav-ic">⚙</div><div class="nav-l">Strategy</div></div>
+    <div class="nav-i" data-p="conn"><div class="nav-ic">⇄</div><div class="nav-l">Connect</div></div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   SWIFT MECHANICAL — pure MA-cross engine, faithful to Pine.
+   NO AI. Entry = crossover(MA(close), MA(open)). TP/SL ladder.
+   Execution via MetaApi REST (cloud bridge to Weltrade MT5).
+   ============================================================ */
+const $=s=>document.querySelector(s);
+const store={
+  get:k=>{try{return JSON.parse(localStorage.getItem('swiftm_'+k))}catch(e){return null}},
+  set:(k,v)=>localStorage.setItem('swiftm_'+k,JSON.stringify(v))
+};
+let state={connected:false,running:false,token:'',acct:'',region:'new-york',demo:true,
+  dir:'BOTH',timer:null,closeBuf:[],openBuf:[],lastCond:0,activeTrade:null,bufSym:null,useCandles:null,
+  swiftOpen:0,swiftBySym:{},swiftDirBySym:{},swiftPosBySym:{},opening:{}};
+
+/* ---------- nav ---------- */
+document.querySelectorAll('.nav-i').forEach(n=>n.onclick=()=>{
+  document.querySelectorAll('.nav-i').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  n.classList.add('on');$('#p-'+n.dataset.p).classList.add('active');
+});
+/* ---------- toggles ---------- */
+['tgConfirm','tgDemo','tgTrend','tgFlip','tgSession','tgScore','tgGuards','tgLearn','tgFixedLot'].forEach(id=>$('#'+id).onclick=function(){this.classList.toggle('on')});
+document.addEventListener('DOMContentLoaded',()=>{
+  const rb=$('#resetDailyBtn');if(rb)rb.onclick=resetDaily;
+  const cb=$('#resetCooldownBtn');if(cb)cb.onclick=resetCooldown;
+  renderDaily();renderLearn();
+});
+document.querySelectorAll('#dirSeg .seg-o').forEach(o=>o.onclick=function(){
+  document.querySelectorAll('#dirSeg .seg-o').forEach(x=>x.classList.remove('on'));
+  this.classList.add('on');state.dir=this.dataset.v;
+});
+
+function log(msg,cls=''){
+  const t=new Date().toTimeString().slice(0,8);
+  const el=document.createElement('div');el.className='log-l '+cls;
+  el.innerHTML=`<span class="t">[${t}]</span> ${msg}`;
+  $('#log').prepend(el);
+}
+
+/* ---------- load saved creds ---------- */
+(function(){
+  const c=store.get('conn');
+  if(c){$('#maToken').value=c.token||'';$('#maAcct').value=c.acct||'';
+    $('#maRegion').value=c.region||'new-york';
+    if(!c.demo)$('#tgDemo').classList.remove('on');}
+})();
+
+/* ============================================================
+   MetaApi REST helpers.  Base URLs per MetaApi docs.
+   ============================================================ */
+function metaBase(region){return `https://mt-client-api-v1.${region}.agiliumtrade.ai`;}
+async function metaGet(path){
+  const r=await fetch(metaBase(state.region)+path,{headers:{'auth-token':state.token}});
+  if(!r.ok)throw new Error('MetaApi '+r.status);
+  return r.json();
+}
+async function metaPost(path,body){
+  const r=await fetch(metaBase(state.region)+path,{method:'POST',
+    headers:{'auth-token':state.token,'Content-Type':'application/json'},
+    body:JSON.stringify(body)});
+  if(!r.ok){const t=await r.text();throw new Error('MetaApi '+r.status+' '+t);}
+  return r.json();
+}
+
+/* ---------- connect ---------- */
+$('#connBtn').onclick=async()=>{
+  state.token=$('#maToken').value.trim();
+  state.acct=$('#maAcct').value.trim();
+  state.region=$('#maRegion').value;
+  state.demo=$('#tgDemo').classList.contains('on');
+  if(!state.token||!state.acct){log('Token and Account ID required.','r');return;}
+  store.set('conn',{token:state.token,acct:state.acct,region:state.region,demo:state.demo});
+  log('Connecting to MetaApi…','y');
+  try{
+    const info=await metaGet(`/users/current/accounts/${state.acct}/account-information`);
+    state.connected=true;
+    $('#dot').classList.add('on');$('#stateTxt').textContent='Connected';
+    $('#connBtn').style.display='none';$('#discBtn').style.display='block';
+    log('Connected · '+(info.name||state.acct)+(state.demo?' (demo)':' (LIVE)'),'g');
+    renderAccount(info);
+    loadSymbols();
+    refreshLoop();
+  }catch(e){
+    log('Connect failed: '+e.message,'r');
+    log('Check token, account ID, region, and that the account is deployed in MetaApi.','y');
+  }
+};
+$('#discBtn').onclick=()=>{stopEngine();state.connected=false;
+  $('#dot').classList.remove('on');$('#stateTxt').textContent='Offline';
+  $('#connBtn').style.display='block';$('#discBtn').style.display='none';log('Disconnected.');};
+
+function renderAccount(info){
+  const cur=info.currency||'USD';
+  $('#balV').textContent=Number(info.balance).toLocaleString(undefined,{minimumFractionDigits:2});
+  $('#balC').textContent=cur+' · balance';
+  $('#eqV').textContent=Number(info.equity).toFixed(2);
+  $('#opV').textContent=(info.equity-info.balance).toFixed(2);
+  $('#opV').className='eq-v '+((info.equity-info.balance)>=0?'pos':'neg');
+}
+
+/* ---------- load real symbols from the account ---------- */
+let symbolSpecs={}; // name -> {digits}
+async function loadSymbols(){
+  if(!state.connected){log('Connect first to load symbols.','r');return;}
+  log('Loading account symbols…','y');
+  try{
+    const syms=await metaGet(`/users/current/accounts/${state.acct}/symbols`);
+    if(!Array.isArray(syms)||!syms.length){log('No symbols returned.','r');return;}
+    // keep them in account order; preselect a synthetic if present
+    const sel=$('#symSel');sel.innerHTML='';
+    syms.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+    // populate the watchlist multi-select too
+    const wsel=$('#watchSel');if(wsel){wsel.innerHTML='';
+      syms.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;wsel.appendChild(o);});}
+    // try to default to a PainX/synthetic if available
+    const pref=syms.find(s=>/pain/i.test(s))||syms.find(s=>/vol/i.test(s))||syms[0];
+    sel.value=pref;
+    log('Loaded '+syms.length+' symbols. Default: '+pref,'g');
+    fetchSpec(pref);
+  }catch(e){log('Symbol load failed: '+e.message,'r');}
+}
+async function fetchSpec(sym){
+  try{
+    const spec=await metaGet(`/users/current/accounts/${state.acct}/symbols/${encodeURIComponent(sym)}/specification`);
+    symbolSpecs[sym]={
+      digits:spec.digits!=null?spec.digits:5,
+      minVol:spec.minVolume!=null?spec.minVolume:0.01,
+      stepVol:spec.volumeStep!=null?spec.volumeStep:0.01,
+      maxVol:spec.maxVolume!=null?spec.maxVolume:100
+    };
+    const s=symbolSpecs[sym];
+    log(`${sym}: ${s.digits} digits · min lot ${s.minVol} · step ${s.stepVol}`,'');
+    // auto-fill lot field with the symbol minimum if the box is empty or below min
+    const cur=+$('#lot').value;
+    if(!cur||cur<s.minVol){$('#lot').value=s.minVol;}
+  }catch(e){symbolSpecs[sym]={digits:5,minVol:0.01,stepVol:0.01,maxVol:100};}
+}
+$('#loadSymsBtn').onclick=loadSymbols;
+$('#symSel').addEventListener('change',e=>{if(e.target.value)fetchSpec(e.target.value);});
+function digitsFor(sym){return (symbolSpecs[sym]&&symbolSpecs[sym].digits!=null)?symbolSpecs[sym].digits:5;}
+
+/* ---------- periodic refresh of account + positions ---------- */
+async function refreshLoop(){
+  if(!state.connected)return;
+  try{
+    const info=await metaGet(`/users/current/accounts/${state.acct}/account-information`);
+    renderAccount(info);
+    state.lastEquity=Number(info.equity);
+    if(dayStartEquity===null||state.dayKey!==todayKey()){dayStartEquity=Number(info.balance);state.dayKey=todayKey();}
+    const pos=await metaGet(`/users/current/accounts/${state.acct}/positions`);
+    renderPositions(pos);
+    $('#cntV').textContent=pos.length;
+    // count YanBoat-tagged positions per symbol toward the per-pair cap
+    const swift=pos.filter(p=>(p.comment||'').indexOf('YANBOAT')===0);
+    state.swiftOpen=swift.length;
+    const bySym={},dirBySym={},posBySym={},pnlBySym={};
+    swift.forEach(p=>{
+      bySym[p.symbol]=(bySym[p.symbol]||0)+1;
+      const d=p.type==='POSITION_TYPE_BUY'?'BUY':'SELL';
+      dirBySym[p.symbol]=d;
+      (posBySym[p.symbol]=posBySym[p.symbol]||[]).push(p);
+      pnlBySym[p.symbol]=(pnlBySym[p.symbol]||0)+Number(p.profit||p.unrealizedProfit||0);
+    });
+    // learning resolution: a symbol that HAD yanboat positions last refresh but has none now = cycle closed
+    const prev=state.swiftBySym||{};
+    Object.keys(prev).forEach(sym=>{
+      if(prev[sym]>0 && (!bySym[sym])){
+        const won=(state.lastPnlBySym&&state.lastPnlBySym[sym]!=null)?state.lastPnlBySym[sym]>=0:true;
+        learnResolve(sym,won);
+        log(`${sym}: cycle closed — recorded as ${won?'WIN':'LOSS'} (lite-learning).`, won?'g':'y');
+      }
+    });
+    state.lastPnlBySym=pnlBySym;
+    state.swiftBySym=bySym;
+    state.swiftDirBySym=dirBySym;
+    state.swiftPosBySym=posBySym;
+    renderLearn();
+  }catch(e){log('Refresh error: '+e.message,'r');}
+  setTimeout(refreshLoop,8000);
+}
+function renderPositions(pos){
+  const el=$('#posList');
+  if(!pos.length){el.innerHTML='<div class="empty"><div class="empty-i">⊟</div>No open positions</div>';return;}
+  el.innerHTML=pos.map(p=>{
+    const buy=p.type==='POSITION_TYPE_BUY';const pnl=Number(p.profit||p.unrealizedProfit||0);
+    return `<div class="tradeitem">
+      <div class="ti-dir ${buy?'b':'s'}">${buy?'L':'S'}</div>
+      <div class="ti-m"><div class="ti-pair">${p.symbol}</div>
+        <div class="ti-time">${Number(p.volume).toFixed(2)} lots @ ${Number(p.openPrice).toFixed(5)}</div></div>
+      <div class="ti-pnl ${pnl>=0?'pos':'neg'}">${pnl>=0?'+':''}${pnl.toFixed(2)}</div>
+    </div>`;}).join('');
+}
+
+/* ============================================================
+   SWIFT SIGNAL ENGINE (faithful port of Pine logic)
+   - variant(): MA type selector  (ALMA/TEMA/Hull/EMA/SMA)
+   - leTrigger = crossover(MA(close), MA(open))
+   - seTrigger = crossunder(MA(close), MA(open))
+   - SL 0.5%, TP1 1%, TP2 1.5%, TP3 2% (qty 50/30/20)
+   ============================================================ */
+function sma(a,n){if(a.length<n)return null;let s=0;for(let i=a.length-n;i<a.length;i++)s+=a[i];return s/n;}
+function ema(a,n){if(a.length<n)return null;const k=2/(n+1);let e=a[0];for(let i=1;i<a.length;i++)e=a[i]*k+e*(1-k);return e;}
+function alma(a,n,off,sig){if(a.length<n)return null;const m=off*(n-1),s=n/sig;let wsum=0,sum=0;
+  for(let i=0;i<n;i++){const w=Math.exp(-((i-m)**2)/(2*s*s));wsum+=w;sum+=a[a.length-n+i]*w;}return sum/wsum;}
+function tema(a,n){const e1=ema(a,n);if(e1===null)return null;
+  // approximation over buffer
+  const e1arr=a.map((_,i)=>i>=n-1?ema(a.slice(0,i+1),n):null).filter(x=>x!==null);
+  const e2=ema(e1arr,n);const e2arr=e1arr.map((_,i)=>i>=n-1?ema(e1arr.slice(0,i+1),n):null).filter(x=>x!==null);
+  const e3=ema(e2arr,n);if(e2===null||e3===null)return e1;return 3*e1-3*e2+e3;}
+function hull(a,n){const half=Math.max(1,Math.round(n/2));const sq=Math.max(1,Math.round(Math.sqrt(n)));
+  const w=(arr,p)=>{if(arr.length<p)return null;let num=0,den=0;for(let i=0;i<p;i++){const wt=p-i;num+=arr[arr.length-1-i]*wt;den+=wt;}return num/den;};
+  const wh=w(a,half),wf=w(a,n);if(wh===null||wf===null)return null;
+  const raw=a.map((_,i)=>{const s=a.slice(0,i+1);const a1=w(s,half),a2=w(s,n);return(a1!==null&&a2!==null)?2*a1-a2:null;}).filter(x=>x!==null);
+  return w(raw,sq);}
+function variant(type,arr,len,almaOff){
+  switch(type){case 'EMA':return ema(arr,len);case 'SMA':return sma(arr,len);
+    case 'TEMA':return tema(arr,len);case 'HullMA':return hull(arr,len);
+    case 'ALMA':default:return alma(arr,len,almaOff,5);}}
+
+function computeSignal(){
+  return signalFromArrays(state.closeBuf,state.openBuf);
+}
+// MA crossover from explicit close/open arrays (oldest->newest)
+function signalFromArrays(closeArr,openArr){
+  const type=$('#maType').value,len=+$('#maLen').value,almaOff=+$('#almaOff').value;
+  const cs=variant(type,closeArr,len,almaOff);
+  const os=variant(type,openArr,len,almaOff);
+  const csP=variant(type,closeArr.slice(0,-1),len,almaOff);
+  const osP=variant(type,openArr.slice(0,-1),len,almaOff);
+  if(cs===null||os===null||csP===null||osP===null)return null;
+  if(cs>os && csP<=osP)return 'BUY';
+  if(cs<os && csP>=osP)return 'SELL';
+  return null;
+}
+// Current trend (not a cross — just which side MA(close) is on vs MA(open))
+function trendFromArrays(closeArr,openArr){
+  const type=$('#maType').value,len=+$('#maLen').value,almaOff=+$('#almaOff').value;
+  const cs=variant(type,closeArr,len,almaOff);
+  const os=variant(type,openArr,len,almaOff);
+  if(cs===null||os===null)return null;
+  return cs>os?'UP':cs<os?'DOWN':'FLAT';
+}
+
+// Average True Range from candle array (oldest->newest)
+function atrFromCandles(candles,period){
+  if(!candles||candles.length<period+1)return null;
+  const trs=[];
+  for(let i=1;i<candles.length;i++){
+    const h=candles[i].high,l=candles[i].low,pc=candles[i-1].close;
+    trs.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));
+  }
+  // Wilder's smoothing approximated by simple mean of last `period` TRs
+  const slice=trs.slice(-period);
+  return slice.reduce((a,b)=>a+b,0)/slice.length;
+}
+
+// Build SL + 3 TP levels. mode 'atr' uses ATR multiples; 'pct' uses % of price.
+function levels(side,price,atr){
+  const mode=$('#riskMode')?$('#riskMode').value:'atr';
+  let slDist,t1Dist,t2Dist,t3Dist;
+  if(mode==='atr'&&atr){
+    slDist=atr*(+$('#slAtr').value);
+    t1Dist=atr*(+$('#tp1Atr').value);
+    t2Dist=atr*(+$('#tp2Atr').value);
+    t3Dist=atr*(+$('#tp3Atr').value);
+  }else{
+    slDist=price*(+$('#slPct').value/100);
+    t1Dist=price*(+$('#tp1Pct').value/100);
+    t2Dist=price*(+$('#tp2Pct').value/100);
+    t3Dist=price*(+$('#tp3Pct').value/100);
+  }
+  if(side==='BUY')return{entry:price,sl:price-slDist,tp1:price+t1Dist,tp2:price+t2Dist,tp3:price+t3Dist};
+  return{entry:price,sl:price+slDist,tp1:price-t1Dist,tp2:price-t2Dist,tp3:price-t3Dist};
+}
+
+/* ---------- price feed via MetaApi current price ----------
+   The historical-candles endpoint needs a paid add-on (was 404'ing),
+   so instead we read the live price each tick and build our own
+   rolling buffer. Each poll = one synthetic "bar": we treat the
+   prior price as the bar's open and the new price as its close. */
+function metaMktBase(region){return `https://mt-market-data-client-api-v1.${region}.agiliumtrade.ai`;}
+
+/* Real historical candles (correct host). Returns array oldest->newest or null. */
+async function fetchCandles(sym,tf){
+  const url=metaMktBase(state.region)+
+    `/users/current/accounts/${state.acct}/historical-market-data/symbols/${encodeURIComponent(sym)}/timeframes/${tf}/candles?limit=200`;
+  const r=await fetch(url,{headers:{'auth-token':state.token}});
+  if(!r.ok)throw new Error('candles '+r.status);
+  const data=await r.json();
+  return Array.isArray(data)?data:null;
+}
+
+async function fetchPrice(sym){
+  const r=await fetch(metaBase(state.region)+
+    `/users/current/accounts/${state.acct}/symbols/${encodeURIComponent(sym)}/current-price`,
+    {headers:{'auth-token':state.token}});
+  if(!r.ok)throw new Error('price '+r.status);
+  const p=await r.json();
+  const bid=Number(p.bid),ask=Number(p.ask);
+  return (bid&&ask)?(bid+ask)/2:(bid||ask);
+}
+const BUF_MAX=250;
+function pushPrice(px){
+  const prevClose=state.closeBuf.length?state.closeBuf[state.closeBuf.length-1]:px;
+  state.openBuf.push(prevClose);
+  state.closeBuf.push(px);
+  if(state.closeBuf.length>BUF_MAX){state.closeBuf.shift();state.openBuf.shift();}
+}
+
+/* ============================================================
+   YanBoat EA features (ported from SWIFT_MT5 v1.38)
+   - session filter, daily guards, equity guard, cooldown
+   - confluence scoring (deterministic)
+   - LITE learning: hour win-rate + win-probability by band,
+     stored in browser localStorage. This APPROXIMATES the EA's
+     Naive Bayes + Kelly engine; it is NOT identical (less data,
+     simpler model, resets if storage cleared).
+   ============================================================ */
+let learn=store.get('learn')||{trades:[],consecLosses:0,cooldownDay:null,hour:{},band:{}};
+function saveLearn(){store.set('learn',learn);}
+
+/* sessions: London 08-16, New York 13-21 (local browser time as proxy) */
+function sessionAllowed(){
+  const h=new Date().getHours();
+  const ldn=(h>=8&&h<16), ny=(h>=13&&h<21);
+  return ldn||ny;
+}
+
+/* cooldown: 4 consecutive losing cycles → lock until next day */
+function cooldownActive(){
+  if(learn.consecLosses<4)return false;
+  if(learn.cooldownDay && learn.cooldownDay!==todayKey()){ // new day → lift
+    learn.consecLosses=0;learn.cooldownDay=null;saveLearn();return false;
+  }
+  if(!learn.cooldownDay){learn.cooldownDay=todayKey();saveLearn();}
+  return true;
+}
+function resetCooldown(){learn.consecLosses=0;learn.cooldownDay=null;saveLearn();log('Cooldown reset.','g');}
+
+/* daily loss/profit guard, based on equity move since first refresh today */
+let dayStartEquity=null;
+function dailyGuardState(){
+  if($('#tgGuards')&&!$('#tgGuards').classList.contains('on'))return{blocked:false};
+  if(dayStartEquity===null||state.lastEquity==null)return{blocked:false};
+  const move=state.lastEquity-dayStartEquity;
+  const maxLoss=+($('#maxLoss').value||0);
+  const profitTgt=+($('#profitTgt').value||0);
+  if(maxLoss>0 && move<=-maxLoss)return{blocked:true,reason:`daily loss ${move.toFixed(2)} hit -${maxLoss}`};
+  if(profitTgt>0 && move>=profitTgt)return{blocked:true,reason:`daily profit ${move.toFixed(2)} hit +${profitTgt}`};
+  return{blocked:false};
+}
+
+/* confluence score: trend agreement(40) + volatility band(30) + session(15) + momentum(15) */
+async function confluenceScore(sym,sig,sigUse,atr){
+  let s=0;
+  // trend agreement across 1h
+  try{
+    const c=await fetchCandles(sym,'1h');
+    if(c&&c.length>=10){const u=c.slice(0,-1);const t=trendFromArrays(u.map(x=>x.close),u.map(x=>x.open));
+      if((sig==='BUY'&&t==='UP')||(sig==='SELL'&&t==='DOWN'))s+=40;else if(t==='FLAT')s+=10;}
+  }catch(e){s+=10;}
+  // volatility in a healthy band (ATR not too dead, not exploding)
+  const closes=sigUse.map(c=>c.close);const px=closes[closes.length-1];
+  const atrPct=atr&&px?atr/px:0;
+  if(atrPct>0.0005&&atrPct<0.01)s+=30;else if(atrPct>0)s+=10;
+  // session
+  if(sessionAllowed())s+=15;
+  // momentum: last 3 closes moving with the signal
+  const n=closes.length;
+  if(n>=4){const up=closes[n-1]>closes[n-4];if((sig==='BUY'&&up)||(sig==='SELL'&&!up))s+=15;}
+  return Math.round(s);
+}
+function scoreToBand(s){return s>=80?3:s>=65?2:s>=50?1:0;}
+
+/* lite learning: hour win-rate filter */
+function learnHourAllows(h){
+  const rec=learn.hour[h]||{w:0,n:0};
+  if(rec.n<10)return{allow:true,wr:-1}; // not enough data → allow
+  const wr=rec.w/rec.n;
+  return{allow:wr>=0.40,wr};
+}
+/* lite learning: win probability by (direction,band) */
+function learnWinProb(sig,band){
+  const key=sig+'-'+band;const rec=learn.band[key]||{w:0,n:0};
+  const prob=(rec.w+1)/(rec.n+2); // Laplace smoothing
+  return{prob,samples:rec.n};
+}
+/* record an opened cycle so we can score it when it closes */
+function learnRecordOpen(sym,sig,score){
+  learn.trades.push({sym,sig,band:scoreToBand(score||50),hour:new Date().getHours(),open:Date.now(),resolved:false});
+  if(learn.trades.length>300)learn.trades=learn.trades.slice(-300);
+  saveLearn();
+}
+/* when positions on a symbol disappear with net P&L, attribute win/loss */
+function learnResolve(sym,won){
+  const t=[...learn.trades].reverse().find(x=>x.sym===sym&&!x.resolved);
+  if(!t)return;
+  t.resolved=true;t.won=won;
+  const hr=learn.hour[t.hour]||{w:0,n:0};hr.n++;if(won)hr.w++;learn.hour[t.hour]=hr;
+  const key=t.sig+'-'+t.band;const bd=learn.band[key]||{w:0,n:0};bd.n++;if(won)bd.w++;learn.band[key]=bd;
+  if(won){learn.consecLosses=0;}else{learn.consecLosses++;}
+  saveLearn();renderLearn();
+}
+function renderLearn(){
+  const el=$('#learnStat');if(!el)return;
+  const resolved=learn.trades.filter(t=>t.resolved);
+  const w=resolved.filter(t=>t.won).length;
+  el.textContent=`Learned: ${resolved.length} closed cycles · ${w}W/${resolved.length-w}L · consec losses ${learn.consecLosses}`+(cooldownActiveQuiet()?' · COOLDOWN':'');
+}
+function cooldownActiveQuiet(){return learn.consecLosses>=4 && learn.cooldownDay===todayKey();}
+
+/* ---------- daily pair tracking ---------- */
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function loadDaily(){
+  const d=store.get('daily');
+  if(d&&d.day===todayKey())return d;
+  const fresh={day:todayKey(),pairs:[]};store.set('daily',fresh);return fresh;
+}
+function dailyPairsUsed(){return loadDaily().pairs;}
+function markPairUsed(sym){
+  const d=loadDaily();
+  if(!d.pairs.includes(sym)){d.pairs.push(sym);store.set('daily',d);}
+  renderDaily();
+}
+function resetDaily(){const fresh={day:todayKey(),pairs:[]};store.set('daily',fresh);renderDaily();log('Daily pair count reset — you can trade 5 fresh pairs.','g');}
+function renderDaily(){
+  const used=dailyPairsUsed();const cap=+($('#maxPairs')?$('#maxPairs').value:5);
+  const el=$('#dailyStat');if(el)el.textContent=used.length+' / '+cap+' pairs used today'+(used.length?' ('+used.join(', ')+')':'');
+}
+
+/* ---------- watchlist ---------- */
+function watchlist(){
+  // selected items in the multi-select; fall back to the single symbol
+  const sel=$('#watchSel');
+  if(sel&&sel.selectedOptions&&sel.selectedOptions.length)
+    return Array.from(sel.selectedOptions).map(o=>o.value);
+  const one=$('#symSel')?$('#symSel').value:null;
+  return one?[one]:[];
+}
+
+/* ---------- engine tick: scan each watched symbol ---------- */
+async function tick(){
+  if(!state.running)return;
+  if(state.scanning)return; // prevent overlapping scans (a slow scan + fast poll = double fire)
+  state.scanning=true;
+  try{
+    const list=watchlist();
+    if(!list.length){log('No symbols in watchlist.','r');return;}
+    const pairCap=+($('#maxPairs')?$('#maxPairs').value:5);
+    renderDaily();
+    for(const sym of list){
+      if(!state.running)break;
+      try{ await evaluateSymbol(sym,pairCap); }
+      catch(e){ log(sym+' error: '+e.message,'r'); }
+    }
+  }finally{
+    state.scanning=false;
+  }
+}
+
+async function evaluateSymbol(sym,pairCap){
+  const dg=digitsFor(sym);
+  if(!symbolSpecs[sym])await fetchSpec(sym);
+  const sigTF=$('#sigTF')?$('#sigTF').value:'15m';
+  const trendTF=$('#trendTF')?$('#trendTF').value:'4h';
+  const useTrend=$('#tgTrend')?$('#tgTrend').classList.contains('on'):true;
+  const atrPeriod=+($('#atrLen').value||14);
+
+  const sigCandles=await fetchCandles(sym,sigTF);
+  if(!sigCandles||sigCandles.length<Math.max(20,atrPeriod+2))return;
+  const confirm=$('#tgConfirm').classList.contains('on');
+  const sigUse=confirm?sigCandles.slice(0,-1):sigCandles;
+  const closeArr=sigUse.map(c=>c.close), openArr=sigUse.map(c=>c.open);
+  const last=sigUse[sigUse.length-1].close;
+  const atr=atrFromCandles(sigUse,atrPeriod);
+
+  const sig=signalFromArrays(closeArr,openArr);
+  // dashboard reflects the currently-selected symbol only
+  if($('#symSel')&&$('#symSel').value===sym){
+    $('#sigSym').textContent=sym;$('#sigPair').textContent=sym;
+    $('#sigPx').textContent='last '+Number(last).toFixed(dg)+' · '+sigTF+(atr?' · ATR '+atr.toFixed(dg):'');
+    if(!sig){setBadge('WAIT');$('#sigDesc').textContent='No '+sigTF+' crossover.';$('#sigLvls').style.display='none';}
+  }
+  if(!sig)return;
+  if(state.dir==='LONG'&&sig==='SELL')return;
+  if(state.dir==='SHORT'&&sig==='BUY')return;
+
+  // --- cooldown gate (consecutive-loss lockout) ---
+  if(cooldownActive()){log(`${sym}: ${sig} blocked — cooldown active (${learn.consecLosses} consec losses).`,'y');return;}
+
+  // --- session filter ---
+  if($('#tgSession')&&$('#tgSession').classList.contains('on') && !sessionAllowed()){
+    log(`${sym}: ${sig} blocked — outside trading session.`,'y');return;
+  }
+
+  // --- daily loss/profit guard ---
+  const guard=dailyGuardState();
+  if(guard.blocked){log(`${sym}: ${sig} blocked — ${guard.reason}.`,'y');return;}
+
+  // 4h trend filter
+  if(useTrend){
+    const trCandles=await fetchCandles(sym,trendTF);
+    if(trCandles&&trCandles.length>=10){
+      const tUse=trCandles.slice(0,-1);
+      const trend=trendFromArrays(tUse.map(c=>c.close),tUse.map(c=>c.open));
+      const ok=(sig==='BUY'&&trend==='UP')||(sig==='SELL'&&trend==='DOWN');
+      if(!ok){log(`${sym}: ${sig} (${sigTF}) skipped — ${trendTF} trend ${trend}`,'y');return;}
+    }
+  }
+
+  // --- close on opposite signal (Option 2) ---
+  const curDir=state.swiftDirBySym?state.swiftDirBySym[sym]:null;
+  const closeOnFlip=$('#tgFlip')?$('#tgFlip').classList.contains('on'):true;
+  if(closeOnFlip && curDir && curDir!==sig){
+    await closeSwiftPositions(sym,`opposite ${sig} signal (was ${curDir})`);
+    if($('#symSel')&&$('#symSel').value===sym){setBadge('WAIT');
+      $('#sigDesc').textContent=`Flipped: closed ${curDir} on ${sig} signal.`;}
+    // do NOT immediately open the reverse — wait for the next clean signal cycle
+    return;
+  }
+
+  // daily 5-pair cap (a pair already traded today still counts)
+  const used=dailyPairsUsed();
+  if(!used.includes(sym) && used.length>=pairCap){
+    log(`${sym}: ${sig} signal but daily ${pairCap}-pair limit reached. Use Reset to allow more.`,'y');
+    return;
+  }
+  // per-pair position cap — count live positions + any in-flight opens this scan
+  const cap=Math.max(1,+($('#maxPerPair')?$('#maxPerPair').value:1));
+  const liveOnSym=state.swiftBySym?(state.swiftBySym[sym]||0):0;
+  const openingOnSym=state.opening?(state.opening[sym]||0):0;
+  if(liveOnSym+openingOnSym>=cap){
+    log(`${sym}: already has ${liveOnSym+openingOnSym}/${cap} YanBoat position(s) — skipping.`,'y');return;
+  }
+
+  // --- confluence score (trend agreement + volatility + session) ---
+  let score=100, scoreMult=1.0;
+  if($('#tgScore')&&$('#tgScore').classList.contains('on')){
+    score=await confluenceScore(sym,sig,sigUse,atr);
+    const minScore=+($('#minScore').value||50);
+    if(score<minScore){log(`${sym}: ${sig} blocked — confluence score ${score} < ${minScore}.`,'y');return;}
+    scoreMult=0.4+(1.4-0.4)*(score/100);
+  }
+
+  // --- lite learning: hour filter + win-probability gate ---
+  let nbMult=1.0;
+  if($('#tgLearn')&&$('#tgLearn').classList.contains('on')){
+    const hr=new Date().getHours();
+    const hourOK=learnHourAllows(hr);
+    if(!hourOK.allow){log(`${sym}: ${sig} blocked — hour ${hr} win-rate ${hourOK.wr.toFixed(2)} too low (lite-learning).`,'y');return;}
+    const p=learnWinProb(sig,scoreToBand(score));
+    if(p.samples>=20 && p.prob<0.45){log(`${sym}: ${sig} blocked — learned P(win) ${p.prob.toFixed(2)} < 0.45.`,'y');return;}
+    if(p.samples>=20) nbMult=0.5+(1.5-0.5)*Math.max(0,Math.min(1,p.prob));
+  }
+
+  // re-check the lock right before firing (another scan may have opened it while we awaited candles/score)
+  if(!state.opening)state.opening={};
+  const liveNow=state.swiftBySym?(state.swiftBySym[sym]||0):0;
+  if(liveNow+(state.opening[sym]||0)>=cap){log(`${sym}: cap reached during evaluation — skipping.`,'y');return;}
+  state.opening[sym]=(state.opening[sym]||0)+1; // claim a slot synchronously
+
+  const L=levels(sig,Number(last),atr);
+  if($('#symSel')&&$('#symSel').value===sym){setBadge(sig==='BUY'?'BUY':'SELL');showLevels(L,dg);
+    $('#sigDesc').textContent=`${sig} confirmed · score ${score} · opening.`;}
+  const fixedLot=$('#tgFixedLot')&&$('#tgFixedLot').classList.contains('on');
+  const finalMult=fixedLot?1:(scoreMult*nbMult);
+  try{
+    await openLadder(sym,sig,L,dg,finalMult,score,cap);
+    markPairUsed(sym);
+  }finally{
+    // release the in-flight claim; the live count from refreshLoop now reflects the real position
+    if(state.opening&&state.opening[sym])state.opening[sym]=Math.max(0,state.opening[sym]-1);
+  }
+}
+function setBadge(t){const b=$('#sigBadge');b.textContent=t;b.className='sig-badge '+(t==='BUY'?'buy':t==='SELL'?'sell':'');}
+function showLevels(L,dg){$('#sigLvls').style.display='grid';
+  $('#lEntry').textContent=L.entry.toFixed(dg);$('#lSL').textContent=L.sl.toFixed(dg);
+  $('#lTP1').textContent=L.tp1.toFixed(dg);$('#lTP2').textContent=L.tp2.toFixed(dg);}
+
+/* ---------- close all SWIFT positions on a symbol (opposite-signal exit) ---------- */
+async function closeSwiftPositions(sym,reason){
+  const list=(state.swiftPosBySym&&state.swiftPosBySym[sym])||[];
+  if(!list.length)return 0;
+  log(`${sym}: ${reason} — closing ${list.length} SWIFT position(s)…`,'y');
+  let closed=0;
+  for(const p of list){
+    try{
+      await metaPost(`/users/current/accounts/${state.acct}/trade`,{
+        actionType:'POSITION_CLOSE_ID',
+        positionId:p.id
+      });
+      closed++;log(`  ✓ closed #${p.id}`,'g');
+    }catch(e){log(`  ✗ close #${p.id} failed: ${e.message}`,'r');}
+  }
+  // clear local trackers immediately; refreshLoop will reconcile
+  if(state.swiftBySym)state.swiftBySym[sym]=0;
+  if(state.swiftPosBySym)state.swiftPosBySym[sym]=[];
+  if(state.swiftDirBySym)delete state.swiftDirBySym[sym];
+  return closed;
+}
+
+/* ---------- order placement ---------- */
+function safeVolume(sym,mult){
+  const s=symbolSpecs[sym]||{minVol:0.01,stepVol:0.01,maxVol:100};
+  const fixed=$('#tgFixedLot')&&$('#tgFixedLot').classList.contains('on');
+  let v;
+  if(fixed){
+    // every symbol uses its own standard (broker minimum) lot, no multipliers
+    v=s.minVol;
+  }else{
+    v=(+$('#lot').value||s.minVol)*(mult||1);
+    const userMax=+($('#maxLot')?$('#maxLot').value:0);
+    if(userMax>0) v=Math.min(v,userMax);
+  }
+  if(s.stepVol>0)v=Math.round(v/s.stepVol)*s.stepVol;
+  v=Math.max(s.minVol,Math.min(v,s.maxVol));
+  return +v.toFixed(4);
+}
+async function openLadder(sym,side,L,dg,lotMult,score,cap){
+  const vol=safeVolume(sym,lotMult);
+  const allRungs=[{tp:L.tp1,tag:'YANBOAT-TP1'},{tp:L.tp2,tag:'YANBOAT-TP2'},{tp:L.tp3,tag:'YANBOAT-TP3'}];
+  const n=Math.max(1,Math.min(cap||1,3));
+  const rungs=allRungs.slice(0,n); // open exactly `cap` positions (1 → just TP1)
+  log(`${sym}: opening ${n} ${side} @ ${vol} lots · SL ${L.sl.toFixed(dg)} · TP${n===1?(' '+L.tp1.toFixed(dg)):'s '+rungs.map(r=>r.tp.toFixed(dg)).join('/')}`,'y');
+  let ok=0;
+  for(const r of rungs){
+    const payload={
+      actionType: side==='BUY'?'ORDER_TYPE_BUY':'ORDER_TYPE_SELL',
+      symbol:sym, volume:vol,
+      stopLoss:+L.sl.toFixed(dg),
+      takeProfit:+r.tp.toFixed(dg),
+      comment:r.tag
+    };
+    try{
+      const res=await metaPost(`/users/current/accounts/${state.acct}/trade`,payload);
+      ok++;log(`  ✓ ${r.tag} (#${res.orderId||res.positionId||'?'})`,'g');
+    }catch(e){log(`  ✗ ${r.tag} rejected: ${e.message}`,'r');}
+  }
+  if(!state.swiftBySym)state.swiftBySym={};
+  state.swiftBySym[sym]=(state.swiftBySym[sym]||0)+ok;
+  if(ok){pushHist(sym,side,L,dg);learnRecordOpen(sym,side,score);}
+}
+let hist=store.get('hist')||[];
+function pushHist(sym,side,L,dg){
+  hist.unshift({sym,side,t:Date.now(),entry:+L.entry.toFixed(dg)});hist=hist.slice(0,30);store.set('hist',hist);renderHist();
+}
+function renderHist(){
+  const el=$('#histList');
+  if(!hist.length){el.innerHTML='<div class="empty"><div class="empty-i">⌗</div>No trades yet</div>';return;}
+  el.innerHTML=hist.map(h=>{const buy=h.side==='BUY';
+    return `<div class="tradeitem"><div class="ti-dir ${buy?'b':'s'}">${buy?'L':'S'}</div>
+      <div class="ti-m"><div class="ti-pair">${h.sym}</div>
+      <div class="ti-time">${new Date(h.t).toLocaleString()}</div></div>
+      <div class="ti-pnl">${h.entry}</div></div>`;}).join('');
+}
+renderHist();
+
+/* ---------- start/stop ---------- */
+$('#runBtn').onclick=()=>state.running?stopEngine():startEngine();
+function startEngine(){
+  if(!state.connected){log('Connect to MetaApi first.','r');
+    document.querySelector('[data-p=conn]').click();return;}
+  state.running=true;state.swiftBySym={};
+  $('#runBtn').textContent='■ STOP AUTO-TRADING';$('#runBtn').className='btn btn-stop';
+  $('#stateTxt').textContent='Running';
+  const poll=Math.max(5,+$('#poll').value)*1000;
+  log('Engine started · polling every '+(poll/1000)+'s','g');
+  tick();state.timer=setInterval(tick,poll);
+}
+function stopEngine(){
+  state.running=false;clearInterval(state.timer);
+  $('#runBtn').textContent='▶ START AUTO-TRADING';$('#runBtn').className='btn btn-go';
+  if(state.connected)$('#stateTxt').textContent='Connected';
+  log('Engine stopped.','y');
+}
+
+/* demo banner reflect toggle */
+$('#tgDemo').addEventListener('click',()=>{
+  const demo=$('#tgDemo').classList.contains('on');
+  $('#demoBanner').style.display=demo?'block':'none';
+  if(!demo){$('#demoBanner').className='demo-banner';$('#demoBanner').style.background='var(--red)';
+    $('#demoBanner').textContent='⚠ LIVE MODE — real funds at risk';$('#demoBanner').style.display='block';}
+  else{$('#demoBanner').textContent='⚠ DEMO MODE — no real funds at risk';}
+});
+
+/* ============================================================
+   PWA installability — the manifest is now a real file
+   (manifest.json) linked in <head>, and the service worker is
+   a real file (sw.js) hosted alongside. This makes PWABuilder
+   detect everything cleanly for APK packaging.
+   Note: installing still does NOT let trading run in the
+   background when the phone sleeps — JS is suspended by the OS.
+   For true 24/7 unattended running the engine must live on a server.
+   ============================================================ */
+(function registerSW(){
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw-yanboat.js').catch(()=>{});
+    }
+  }catch(e){/* optional */}
+})();
+
+/* Capture the install prompt and surface a button when available */
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  const b=document.getElementById('installBtn');
+  if(b)b.style.display='block';
+});
+document.addEventListener('DOMContentLoaded',()=>{
+  const b=document.getElementById('installBtn');
+  if(b)b.onclick=async()=>{
+    if(!deferredPrompt){alert('If no prompt appears, use your browser menu → "Add to Home screen" / "Install app".');return;}
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt=null;b.style.display='none';
+  };
+});
+</script>
+</body>
+</html>
